@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Expo Web to GitHub Pages
 
 on:
   push:
@@ -12,18 +12,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli
+
+      - name: Install app dependencies
         run: |
           cd app
           npm install
 
-      - name: Build project
+      - name: Build Expo Web project
         run: |
           cd app
-          npm run build
+          npx expo export:web
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./app/build
+          publish_dir: ./app/web-build
